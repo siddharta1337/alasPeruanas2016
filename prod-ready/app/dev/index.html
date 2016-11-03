@@ -1,0 +1,46 @@
+<html>
+
+<head>
+    <title>Angular 2 - Hola Mundo TS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+
+    <!-- carga las librerias base-->
+
+    <script src="js/lib/angular2/es6-shim.min.js"></script>
+    <script src="js/lib/angular2/system-polyfills.js"></script>
+    <script src="js/lib/angular2/angular2-polyfills.js"></script>
+    <script src="js/lib/angular2/system.src.js"></script>
+    <script src="js/lib/angular2/Rx.js"></script>
+    <script src="js/lib/angular2/angular2.dev.js"></script>
+    <script src="js/lib/angular2/firebase.js"></script>
+    
+
+
+    <script>
+
+
+        System.config({
+            packages: {
+                js: {
+                    format: 'register',
+                    defaultExtension: 'js'
+                }
+            }
+        });
+        /// incluye librerias
+        System.import('js/app.js').catch(function(err) {
+            console.error(err);
+        });
+    </script>
+
+</head>
+
+
+<body>
+    <!-- Despliega la aplicación -->
+    <mi-app>Loading...</mi-app>
+
+</body>
+
+</html>
