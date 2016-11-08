@@ -1,5 +1,10 @@
-
+{{nombreUsuarioRandom }}
 <ul>
-    <li *ngFor='let nombre of base '> {{generadorRadomDeNombres()}} </li>
+    <li *ngFor='let nombre of chatValues '> {{nombre.ip}}: {{nombre.stars}}
+        - </li>
 </ul>
----{{chatValues.user}}///
+<form>
+<input type="text" [(ngModel)]="chat">
+<button type="button" (click)="doLogin($event)"> </button>
+</form>
+---{{chatValues}}///

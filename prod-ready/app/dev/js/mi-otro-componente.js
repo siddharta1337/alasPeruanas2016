@@ -21,6 +21,7 @@ System.register(['angular2/core'], function(exports_1) {
                 function MiOtroComponente(zone) {
                     this.zone = zone;
                     this.base = new Array(10);
+                    this.asignadorNombres();
                     this.fb = firebase;
                     this.firebaseInit();
                 }
@@ -52,6 +53,16 @@ System.register(['angular2/core'], function(exports_1) {
                     ];
                     return this.names[Math.round(Math.random() * (this.names.length - 1))] + " " + apellidos[Math.round(Math.random() * (apellidos.length - 1))];
                 };
+                MiOtroComponente.prototype.asignadorNombres = function () {
+                    var userName = this.generadorRadomDeNombres();
+                    if (localStorage.getItem("userName") === null) {
+                        localStorage.setItem("userName", userName);
+                    }
+                    else {
+                        userName = localStorage.getItem("userName");
+                    }
+                    this.nombreUsuarioRandom = userName;
+                };
                 //conecta la app a firebase
                 MiOtroComponente.prototype.firebaseInit = function () {
                     // Initialize Firebase
@@ -62,21 +73,36 @@ System.register(['angular2/core'], function(exports_1) {
                         databaseURL: "https://firechat-aa6f7.firebaseio.com/"
                     };
                     this.fb.initializeApp(config);
-                    var numero = 14;
+                    var numero = 1;
                     var path = 'chat/user' + numero + "/";
-                    this.fb.database().ref(path).set({
-                        fancyName: 'juancho',
-                        message: 'yolo'
-                    });
                     var me = this;
-                    me.chatValues = { user: "ji" };
+                    me.chatValues = [];
+                    this.read();
+                };
+                MiOtroComponente.prototype.read = function () {
+                    var me = this;
                     var starCountRef = this.fb.database().ref('chat');
                     starCountRef.on('value', function (snapshot) {
                         console.log("----");
-                        console.log(snapshot.val());
-                        me.chatValues = { user: "jooo" };
-                        me.zone.run();
+                        var votes = [];
+                        snapshot.forEach(function (vote) {
+                            votes.push({ ip: vote.val().fancyName, stars: vote.val().message });
+                        });
+                        me.chatValues = votes; //snapshot.val();
+                        console.log(votes);
+                        //me.zone.run();
                     });
+                };
+                MiOtroComponente.prototype.doLogin = function (event) {
+                    console.log(this.chat);
+                    var me = this;
+                    var numero = Math.random().toString(36).substr(2);
+                    var path = 'chat/user' + numero + "/";
+                    this.fb.database().ref(path).set({
+                        fancyName: localStorage.getItem("userName"),
+                        message: me.chat
+                    });
+                    event.preventDefault();
                 };
                 MiOtroComponente = __decorate([
                     core_1.Component({

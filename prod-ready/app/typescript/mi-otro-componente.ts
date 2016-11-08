@@ -1,6 +1,8 @@
 import {Component} from 'angular2/core';
 	
 import { Injectable, NgZone } from 'angular2/core';
+import { FormBuilder, Validators } from 'angular2/common';
+
 
 
 @Component({
@@ -12,11 +14,13 @@ export class MiOtroComponente{
     base:Array<String>;
     names:Array<String>;
     fb:any;
-    chatValues:Object;
+    chatValues:Array<Object>;
+    nombreUsuarioRandom:Text;
     
 
     constructor(private zone: NgZone){
         this.base = new Array(10);
+        this.asignadorNombres()
         
        
         this.fb = firebase;
@@ -57,6 +61,17 @@ export class MiOtroComponente{
 
     }
 
+    asignadorNombres(){
+        var userName =  this.generadorRadomDeNombres();
+        if(localStorage.getItem("userName")===null){
+            localStorage.setItem("userName", userName);
+        }else{
+            userName = localStorage.getItem("userName")
+        }
+
+        this.nombreUsuarioRandom =  userName;
+    }
+
   
    
     //conecta la app a firebase
@@ -70,25 +85,45 @@ export class MiOtroComponente{
         };
         this.fb.initializeApp(config);
        
-        var numero = 14
+        var numero = 1
         var path = 'chat/user'+numero+"/"
-       this.fb.database().ref(path).set({
-            fancyName:'juancho',
-            message:'yolo'
-        });
+        
         
         var me = this;
-        me.chatValues = {user:"ji"} ;
-        var starCountRef = this.fb.database().ref('chat');
-        starCountRef.on('value', function(snapshot) {
-                console.log("----");
-                console.log(snapshot.val())
-                me.chatValues = {user:"jooo"} ;
-                me.zone.run();
-                
-        });
+        me.chatValues = [] ;
+       
+        this.read();
 
     } 
+
+    read(){
+         var me = this;
+         var starCountRef = this.fb.database().ref('chat');
+        starCountRef.on('value', function(snapshot) {
+                console.log("----");
+                var votes = [];
+                snapshot.forEach(function(vote) {
+                    votes.push({ ip: vote.val().fancyName, stars: vote.val().message});
+                });
+
+                
+                me.chatValues = votes;//snapshot.val();
+                console.log(votes)
+                //me.zone.run();
+                
+        });
+    }
+    doLogin(event) {
+        console.log(this.chat);
+         var me = this;
+        var numero = Math.random().toString(36).substr(2);
+        var path = 'chat/user'+numero+"/"
+       this.fb.database().ref(path).set({
+            fancyName:localStorage.getItem("userName"),
+            message:me.chat
+        });
+        event.preventDefault();
+    }
 
     
 
